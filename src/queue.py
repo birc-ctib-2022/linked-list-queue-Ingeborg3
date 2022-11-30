@@ -23,7 +23,7 @@ class Link(Generic[T]):
 
 
 def insert_after(link: Link[T], val: T) -> None:
-    """Add a new link containing avl after link."""
+    """Add a new link containing val after link."""
     new_link = Link(val, link, link.next)
     new_link.prev.next = new_link
     new_link.next.prev = new_link
@@ -67,6 +67,18 @@ class DLList(Generic[T]):
         # after that link.
         for val in seq:
             insert_after(self.head.prev, val)
+    
+    def __len__(self):
+        """
+        >>> len(DLList([1,2,3]))
+        3
+        """
+        link = self.head.next
+        len = 0
+        while link is not self.head:
+            len += 1
+            link = link.next
+        return len
 
     def __str__(self) -> str:
         """Get string with the elements going in the next direction."""
@@ -83,26 +95,65 @@ class Queue(Generic[T]):
     """A queue of type-T elements."""
 
     def __init__(self) -> None:
-        """Make a new queue."""
-        # FIXME: code here
-        ...
-
+        """Make a new queue.
+        >>> x = Queue()
+        >>> print(x)
+        []
+        """
+        self.queue = DLList()
+        # evt. gør, så der kan indsættes elementer i listen til start
+        # også. 
+        
     def is_empty(self) -> bool:
-        """Check if this queue is empty."""
-        # FIXME: code here
-        ...
+        """Check if this queue is empty.
+        >>> Queue().is_empty()
+        True
+        >>> x = Queue()
+        >>> x.enqueue(1) # enqueue returns None
+        >>> x.is_empty()
+        False
+        """
+        return len(self.queue) == 0
 
     def enqueue(self, x: T) -> None:
-        """Add x to the back of this queue."""
-        # FIXME: code here
-        ...
+        """Add x to the back of this queue.
+        >>> x = Queue()
+        >>> x.enqueue(1)
+        >>> print(x)
+        [1]
+        """
+        insert_after(self.queue.head.prev, x)
 
     def front(self) -> T:
-        """Get the front element of the queue."""
-        # FIXME: code here
-        ...
+        """Get the front element of the queue.
+        >>> x = Queue()
+        >>> x.enqueue(1)
+        >>> x.enqueue(2)
+        >>> print(x.front())
+        1
+        """
+        return self.queue.head.next.val
 
     def dequeue(self) -> T:
-        """Get the front element, remove it from the queue, and return it."""
-        # FIXME: code here
-        ...
+        """Get the front element, remove it from the queue, and return it.
+        >>> x = Queue()
+        >>> x.enqueue(1)
+        >>> x.enqueue(2)
+        >>> print(x)
+        [1, 2]
+        >>> x.dequeue()
+        1
+        """
+        first = self.queue.head.next
+        remove_link(first)
+        return first.val
+
+    def __str__(self):
+        """
+        >>> x = Queue()
+        >>> x.enqueue(1)
+        >>> x.enqueue(2)
+        >>> print(x)
+        [1, 2]
+        """
+        return self.queue.__str__()
