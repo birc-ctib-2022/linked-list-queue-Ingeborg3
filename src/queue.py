@@ -90,6 +90,8 @@ class DLList(Generic[T]):
         return f"[{', '.join(elms)}]"
     __repr__ = __str__  # because why not?
 
+class EmptyQueue(Exception):
+    pass
 
 class Queue(Generic[T]):
     """A queue of type-T elements."""
@@ -132,7 +134,9 @@ class Queue(Generic[T]):
         >>> print(x.front())
         1
         """
-        return self.queue.head.next.val
+        if len(self.queue) != 0:
+            return self.queue.head.next.val
+        raise EmptyQueue()
 
     def dequeue(self) -> T:
         """Get the front element, remove it from the queue, and return it.
@@ -144,9 +148,11 @@ class Queue(Generic[T]):
         >>> x.dequeue()
         1
         """
-        first = self.queue.head.next
-        remove_link(first)
-        return first.val
+        if len(self.queue) != 0:
+            first = self.queue.head.next
+            remove_link(first)
+            return first.val
+        raise EmptyQueue()
 
     def __str__(self):
         """
